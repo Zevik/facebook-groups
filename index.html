@@ -157,11 +157,15 @@
                 const text = await response.text();
                 const data = JSON.parse(text.substr(47).slice(0, -2));
                 
-                data.table.rows.forEach(row => {
-                    const name = row.c[0].v;
-                    const keywords = row.c[1].v.split(',').map(keyword => keyword.trim().toLowerCase());
-                    const link = row.c[2].v;
-                    neighborhoods[name] = { keywords, link };
+                data.table.rows.forEach((row, index) => {
+                    try {
+                        const name = row.c[0].v;
+                        const keywords = row.c[1].v.split(',').map(keyword => keyword.trim().toLowerCase());
+                        const link = row.c[2].v;
+                        neighborhoods[name] = { keywords, link };
+                    } catch (error) {
+                        console.error(`Error processing row ${index + 1}:`, error);
+                    }
                 });
                 
                 console.log('Neighborhoods loaded:', Object.keys(neighborhoods).length);
