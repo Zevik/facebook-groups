@@ -134,10 +134,10 @@
         <div class="footer-text text-center">
             <p>פרסום עלול לגרור חסימה גורפת. לקבלת הצעת מחיר כולל יצירת תוכן וקידום אורגני בקבוצות הפייסבוק והוואטסאפ של ירושלים, נא פנו למשרדנו:</p>
             <p>
-                <a href="tel:053-5421940">053-5421940</a> (קליקבילי)
+                <a href="tel:053-5421940" style="text-decoration: none;">053-5421940</a>
                 <br>
                 או בווטסאפ 
-                <a href="https://wa.me/972535421940">0535421940</a>
+                <a href="https://wa.me/972535421940" target="_blank" style="text-decoration: none;">0535421940</a>
             </p>
         </div>
 
@@ -159,8 +159,9 @@
                 
                 data.table.rows.forEach(row => {
                     const name = row.c[0].v;
+                    const keywords = row.c[1].v.split(',').map(keyword => keyword.trim().toLowerCase());
                     const link = row.c[2].v;
-                    neighborhoods[name] = link;
+                    neighborhoods[name] = { keywords, link };
                 });
                 
                 console.log('Neighborhoods loaded:', Object.keys(neighborhoods).length);
@@ -177,8 +178,8 @@
                 const value = this.value.trim().toLowerCase();
                 console.log('Input value:', value);
 
-                const matchedNeighborhoods = Object.keys(neighborhoods).filter(n => 
-                    n.toLowerCase().includes(value) && value.length > 1
+                const matchedNeighborhoods = Object.keys(neighborhoods).filter(name => 
+                    neighborhoods[name].keywords.some(keyword => keyword.includes(value)) && value.length > 1
                 );
                 
                 console.log('Matched neighborhoods:', matchedNeighborhoods);
@@ -186,7 +187,7 @@
                 searchResults.innerHTML = '';
                 if (matchedNeighborhoods.length > 0) {
                     matchedNeighborhoods.forEach(name => {
-                        const link = neighborhoods[name];
+                        const link = neighborhoods[name].link;
                         const button = document.createElement('a');
                         button.href = link;
                         button.target = '_blank';
