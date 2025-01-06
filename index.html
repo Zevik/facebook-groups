@@ -26,30 +26,24 @@
             background-color: #f8f9fa;
         }
         .container {
-            max-width: 450px; /* הקטנה פי 2 */
-            margin-top: 1.5rem; /* הקטנה פי 2 */
-            margin-bottom: 1.5rem; /* הקטנה פי 2 */
-            padding: 2rem; /* השארת גודל הפונט */
+            max-width: 900px;
+            margin-top: 3rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
             background-color: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             overflow: hidden;
         }
         .title-text {
-            font-size: 2.5rem; /* השארת גודל הפונט */
+            font-size: 2.5rem;
             color: #007bff;
             font-weight: bold;
-            margin-bottom: 1rem; /* הקטנה פי 2 */
+            margin-bottom: 2rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
-        .text-center.mb-4 {
-            padding-top: 1rem; /* הקטנת הגובה */
-            padding-bottom: 0.5rem; /* אופציונלי - הקטנת רווח תחתון */
-            max-height: 100px; /* גובה מקסימלי מותאם */
-            overflow: hidden; /* מבטיח שלא יהיו חריגות בתוכן */
-        }
         .search-input {
-            padding: 0.6rem 1.2rem; /* הקטנת המרווח העליון */
+            padding: 1.2rem;
             font-size: 1.2rem;
             border-radius: 8px;
             margin-bottom: 0.5rem;
@@ -165,6 +159,7 @@
                 const data = JSON.parse(text.substr(47).slice(0, -2));
                 
                 data.table.rows.slice(1).forEach((row, index) => {
+                    console.log(`Row ${index + 2}:`, row.c); // index + 2 because we skipped the header row
                     try {
                         if (row.c[0]) {
                             const name = row.c[0].v;
@@ -178,6 +173,8 @@
                         console.error(`Error processing row ${index + 2}:`, error);
                     }
                 });
+                
+                console.log('Neighborhoods loaded:', Object.keys(neighborhoods).length);
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -189,11 +186,14 @@
             
             search.addEventListener('input', function() {
                 const value = this.value.trim().toLowerCase();
+                console.log('Input value:', value);
 
                 const matchedNeighborhoods = Object.keys(neighborhoods).filter(name => 
                     name.toLowerCase().includes(value) || 
                     neighborhoods[name].keywords.some(keyword => keyword.includes(value))
                 );
+                
+                console.log('Matched neighborhoods:', matchedNeighborhoods);
                 
                 searchResults.innerHTML = '';
                 if (matchedNeighborhoods.length > 0) {
