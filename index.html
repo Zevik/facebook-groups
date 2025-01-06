@@ -158,11 +158,16 @@
                 const data = JSON.parse(text.substr(47).slice(0, -2));
                 
                 data.table.rows.forEach((row, index) => {
+                    console.log(`Row ${index + 1}:`, row.c);
                     try {
-                        const name = row.c[0].v;
-                        const keywords = row.c[1].v.split(',').map(keyword => keyword.trim().toLowerCase());
-                        const link = row.c[2].v;
-                        neighborhoods[name] = { keywords, link };
+                        if (row.c[0] && row.c[1] && row.c[2]) {
+                            const name = row.c[0].v;
+                            const keywords = row.c[1].v.split(',').map(keyword => keyword.trim().toLowerCase());
+                            const link = row.c[2].v;
+                            neighborhoods[name] = { keywords, link };
+                        } else {
+                            console.warn(`Row ${index + 1} has null values and was skipped.`);
+                        }
                     } catch (error) {
                         console.error(`Error processing row ${index + 1}:`, error);
                     }
