@@ -160,13 +160,13 @@
                 data.table.rows.forEach((row, index) => {
                     console.log(`Row ${index + 1}:`, row.c);
                     try {
-                        if (row.c[0] && row.c[1] && row.c[2]) {
+                        if (row.c[0]) {
                             const name = row.c[0].v;
-                            const keywords = row.c[1].v.split(',').map(keyword => keyword.trim().toLowerCase());
-                            const link = row.c[2].v;
+                            const keywords = row.c[1] ? row.c[1].v.split(',').map(keyword => keyword.trim().toLowerCase()) : [];
+                            const link = row.c[2] ? row.c[2].v : '#';
                             neighborhoods[name] = { keywords, link };
                         } else {
-                            console.warn(`Row ${index + 1} has null values and was skipped.`);
+                            console.warn(`Row ${index + 1} has null values in column A and was skipped.`);
                         }
                     } catch (error) {
                         console.error(`Error processing row ${index + 1}:`, error);
@@ -188,7 +188,8 @@
                 console.log('Input value:', value);
 
                 const matchedNeighborhoods = Object.keys(neighborhoods).filter(name => 
-                    neighborhoods[name].keywords.some(keyword => keyword.includes(value)) && value.length > 1
+                    name.toLowerCase().includes(value) || 
+                    neighborhoods[name].keywords.some(keyword => keyword.includes(value))
                 );
                 
                 console.log('Matched neighborhoods:', matchedNeighborhoods);
